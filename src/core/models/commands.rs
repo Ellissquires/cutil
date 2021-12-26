@@ -8,7 +8,7 @@ use crate::core::util::file::open;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Commands {
-  commands: Vec<Command>,
+  pub commands: Vec<Command>,
 }
 
 impl Commands {

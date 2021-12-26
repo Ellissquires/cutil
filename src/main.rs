@@ -11,8 +11,8 @@ pub enum Cli {
     Add {
         #[structopt(short = "c")]
         command: String,
-        #[structopt(short = "i")]
-        identifier: Option<String>,
+        #[structopt(short = "t")]
+        tag: Option<String>,
     },
     #[structopt(name = "alias")]
     Alias {
@@ -21,18 +21,20 @@ pub enum Cli {
     },
     #[structopt(name = "search")]
     Search {
-        #[structopt(short = "q")]
-        query: String,
+        #[structopt(short = "q", required_unless = "tag")]
+        query: Option<String>,
+        #[structopt(short = "t", required_unless = "query")]
+        tag: Option<String>,
     },
 }
 
 fn main() {
     match Cli::from_args() {
-        Cli::Add {
-            command,
-            identifier,
-        } => add(command, identifier),
+        Cli::Add { command, tag } => add(command, tag),
         Cli::Alias { name: _ } => (),
-        Cli::Search { query } => search(query),
+        Cli::Search { query, tag } => match search(query, tag) {
+            Ok(_res) => (),
+            Err(e) => panic!("Problem selecting command: {:?}", e),
+        },
     }
 }
